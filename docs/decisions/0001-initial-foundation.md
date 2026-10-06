@@ -1,7 +1,7 @@
 # 0001 — Fundação técnica inicial
 
 - **Data:** 2026-10-06
-- **Estado:** Provisória (sujeita à decisão de CMS e aos documentos de requisitos)
+- **Estado:** Revista pela [0002](0002-umbraco-cms-and-brand.md) (decisões 1, 4 e 7 substituídas)
 
 ## Contexto
 

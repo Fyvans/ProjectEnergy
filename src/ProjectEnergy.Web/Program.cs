@@ -1,51 +1,48 @@
-using Microsoft.AspNetCore.Localization;
-using Microsoft.AspNetCore.Localization.Routing;
-using Microsoft.AspNetCore.Mvc.Razor;
-using ProjectEnergy.Web;
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
-var builder = WebApplication.CreateBuilder(args);
+#if DEBUG
+builder.Configuration.AddJsonFile("appsettings.Local.json", optional: true, reloadOnChange: true);
+#endif
 
-builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-builder.Services.AddControllersWithViews()
-    // Páginas de conteúdo por idioma: Views/Home/About.pt.cshtml, About.en.cshtml.
-    .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix);
-builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+builder.CreateUmbracoBuilder()
+    .AddBackOffice()
+    .AddWebsite()
+    .AddComposers()
+    .Build();
 
-builder.Services.Configure<RequestLocalizationOptions>(options =>
-{
-    options.SetDefaultCulture(SiteCultures.Default)
-        .AddSupportedCultures(SiteCultures.Supported)
-        .AddSupportedUICultures(SiteCultures.Supported);
+WebApplication app = builder.Build();
 
-    // O idioma é determinado apenas pelo prefixo do URL (/pt/..., /en/...).
-    options.RequestCultureProviders =
-    [
-        new RouteDataRequestCultureProvider { RouteDataStringKey = "culture", UIRouteDataStringKey = "culture" }
-    ];
-});
-
-var app = builder.Build();
+await app.BootUmbracoAsync();
 
 if (!app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler($"/{SiteCultures.Default}/error");
     app.UseHsts();
 }
 
 app.UseHttpsRedirection();
-app.UseRouting();
-app.UseRequestLocalization();
 
-app.UseAuthorization();
+// O site vive em /pt e /en (domínios configurados no Umbraco); a raiz encaminha para o idioma por omissão.
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/")
+    {
+        context.Response.Redirect("/pt/");
+        return;
+    }
 
-app.MapStaticAssets();
+    await next();
+});
 
-app.MapGet("/", () => Results.Redirect($"/{SiteCultures.Default}"));
+app.UseUmbraco()
+    .WithMiddleware(u =>
+    {
+        u.UseBackOffice();
+        u.UseWebsite();
+    })
+    .WithEndpoints(u =>
+    {
+        u.UseBackOfficeEndpoints();
+        u.UseWebsiteEndpoints();
+    });
 
-app.MapControllerRoute(
-    name: "localized",
-    pattern: "{culture:regex(^(pt|en)$)}/{action=Index}",
-    defaults: new { controller = "Home" })
-    .WithStaticAssets();
-
-app.Run();
+await app.RunAsync();

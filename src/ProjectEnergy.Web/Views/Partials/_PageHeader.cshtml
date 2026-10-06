@@ -1,0 +1,25 @@
+@inherits UmbracoViewPage
+@{
+    var home = Model.Root();
+    string T(string key) => Umbraco.GetDictionaryValue(key) ?? key;
+}
+<section class="relative overflow-hidden bg-navy-900 text-white">
+    <div class="bg-grid absolute inset-0 [mask-image:linear-gradient(to_bottom,black,transparent)]" aria-hidden="true"></div>
+    <div class="absolute -top-24 right-0 size-[28rem] rounded-full bg-energy-600/25 blur-3xl" aria-hidden="true"></div>
+    <div class="container-page relative py-16 sm:py-20">
+        <nav aria-label="Breadcrumb" class="text-xs font-medium text-navy-200">
+            <a href="@home.Url()" class="hover:text-white">@T("Page.Home")</a>
+            <span class="mx-2 text-navy-300/60">/</span>
+            <span class="text-white">@Model.Name</span>
+        </nav>
+        <div class="mt-6 flex flex-wrap items-center gap-3">
+            <h1 class="text-4xl font-bold tracking-tight text-white sm:text-5xl">@Model.Name</h1>
+            @if (Model.Value<bool>(ContentAliases.Props.IsDemoContent))
+            {
+                <span class="demo-badge">@T("Demo.Badge")</span>
+            }
+        </div>
+        <p class="mt-5 max-w-3xl text-lg leading-relaxed text-navy-100/90">@(Model.Value<string>(ContentAliases.Props.Intro))</p>
+    </div>
+    <div class="h-1 bg-gradient-to-r from-energy-600 via-flame-500 to-navy-500" aria-hidden="true"></div>
+</section>

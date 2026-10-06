@@ -3,54 +3,183 @@
 /* Ficheiros onde o Tailwind procura classes utilizadas. */
 @source "../Views";
 
+/* Fontes open-source (SIL OFL 1.1) servidas localmente — ver wwwroot/fonts/LICENSE-*.txt. */
+@font-face {
+  font-family: "Inter Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../fonts/inter-latin-wght-normal.woff2") format("woff2-variations");
+}
+
+@font-face {
+  font-family: "Montserrat Variable";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 100 900;
+  src: url("../fonts/montserrat-latin-wght-normal.woff2") format("woff2-variations");
+}
+
 /*
-  Paleta e tipografia PROVISÓRIAS: ainda não existem guidelines de marca aprovadas.
-  Substituir estes tokens quando a identidade visual for confirmada.
+  Paleta derivada do logótipo Project Energy (azul-marinho, verde e laranja da chama).
+  Valores aproximados à imagem fornecida; confirmar com guidelines de marca quando existirem.
 */
 @theme {
-  --color-brand-50: #eef6f9;
-  --color-brand-100: #d5e9f0;
-  --color-brand-600: #1f5f7a;
-  --color-brand-700: #184c62;
-  --color-brand-900: #0d2a37;
-  --color-accent-500: #e0a526;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --color-navy-50: #eef3f9;
+  --color-navy-100: #d6e1ef;
+  --color-navy-200: #a9bedb;
+  --color-navy-300: #7896c0;
+  --color-navy-500: #1e4a80;
+  --color-navy-700: #0d3462;
+  --color-navy-800: #0a2a50;
+  --color-navy-900: #071d38;
+  --color-navy-950: #04122a;
+
+  --color-energy-50: #ecf7ef;
+  --color-energy-100: #cfead7;
+  --color-energy-500: #12803f;
+  --color-energy-600: #0a6630;
+  --color-energy-700: #085227;
+
+  --color-flame-300: #fdc46a;
+  --color-flame-400: #f8a93a;
+  --color-flame-500: #f0901c;
+  --color-flame-600: #d9760c;
+
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  --font-display: "Montserrat Variable", "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display text-navy-900;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    @apply bg-flame-300 text-navy-950;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-flame-500;
+  }
+}
+
+/* Utilitários base reutilizados com @apply nos componentes abaixo. */
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-md px-5 py-3 text-sm font-semibold transition-colors duration-150;
+}
+
+@utility card {
+  @apply rounded-xl border border-slate-200/80 bg-white p-7 shadow-[0_1px_2px_rgba(7,29,56,0.04),0_8px_24px_-12px_rgba(7,29,56,0.12)];
 }
 
 @layer components {
   .container-page {
-    @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
   }
 
-  .demo-badge {
-    @apply inline-flex items-center rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-xs font-semibold tracking-wide text-amber-800 uppercase;
+  /* Etiqueta de secção — pequena, em maiúsculas, com traço de acento. */
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-semibold tracking-[0.18em] text-energy-600 uppercase;
   }
 
-  .demo-note {
-    @apply rounded-md border border-dashed border-amber-400 bg-amber-50 p-4 text-sm text-amber-900;
+  .eyebrow::before {
+    content: "";
+    @apply h-0.5 w-6 rounded-full bg-flame-500;
   }
 
-  .page-title {
-    @apply text-3xl font-bold tracking-tight text-brand-900 sm:text-4xl;
+  .eyebrow-light {
+    @apply text-flame-300;
+  }
+
+  .section {
+    @apply py-16 sm:py-24;
   }
 
   .section-title {
-    @apply text-xl font-semibold text-brand-900 sm:text-2xl;
+    @apply mt-3 text-3xl font-bold tracking-tight sm:text-4xl;
   }
 
-  .card {
-    @apply rounded-lg border border-slate-200 bg-white p-6 shadow-sm;
+  .section-lead {
+    @apply mt-4 max-w-2xl text-lg leading-relaxed text-slate-600;
+  }
+
+  .btn-primary {
+    @apply btn bg-flame-500 text-navy-950 shadow-sm hover:bg-flame-400;
+  }
+
+  .btn-secondary {
+    @apply btn bg-navy-800 text-white hover:bg-navy-700;
+  }
+
+  .btn-ghost-light {
+    @apply btn border border-white/30 text-white hover:border-white/60 hover:bg-white/10;
+  }
+
+  .card-link {
+    @apply card transition duration-200 hover:-translate-y-0.5 hover:border-navy-200 hover:shadow-[0_2px_4px_rgba(7,29,56,0.06),0_16px_32px_-12px_rgba(7,29,56,0.22)];
+  }
+
+  .icon-tile {
+    @apply flex size-12 items-center justify-center rounded-lg bg-navy-50 text-navy-700;
+  }
+
+  /* Indicação de conteúdo de demonstração — discreta mas sempre visível. */
+  .demo-badge {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-amber-300/80 bg-amber-50 px-2.5 py-0.5 text-[0.7rem] font-semibold tracking-wide text-amber-800 uppercase;
+  }
+
+  .demo-note {
+    @apply rounded-lg border border-dashed border-amber-400 bg-amber-50/70 p-5 text-sm leading-relaxed text-amber-900;
+  }
+
+  /* Texto rico vindo do CMS. */
+  .prose-content {
+    @apply max-w-3xl text-base leading-relaxed text-slate-700;
+  }
+
+  .prose-content h2 {
+    @apply mt-10 mb-3 text-2xl font-bold;
+  }
+
+  .prose-content h3 {
+    @apply mt-8 mb-2 text-lg font-semibold;
+  }
+
+  .prose-content p {
+    @apply mb-4;
+  }
+
+  .prose-content ul {
+    @apply mb-4 list-disc space-y-1 pl-6 marker:text-energy-600;
+  }
+
+  .prose-content a {
+    @apply font-medium text-navy-700 underline decoration-flame-500 underline-offset-2 hover:text-navy-900;
   }
 
   .form-label {
-    @apply mb-1 block text-sm font-medium text-slate-700;
+    @apply mb-1.5 block text-sm font-medium text-slate-700;
   }
 
   .form-field {
-    @apply block w-full rounded-md border border-slate-300 bg-slate-100 px-3 py-2 text-sm text-slate-500;
+    @apply block w-full cursor-not-allowed rounded-md border border-slate-300 bg-slate-50 px-3.5 py-2.5 text-sm text-slate-500;
   }
 
   .btn-disabled {
-    @apply inline-flex cursor-not-allowed items-center rounded-md bg-slate-300 px-4 py-2 text-sm font-semibold text-slate-600;
+    @apply btn cursor-not-allowed bg-slate-200 text-slate-500;
+  }
+
+  /* Padrão subtil para fundos escuros (gerado em CSS, sem imagens). */
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.05) 1px, transparent 1px);
+    background-size: 56px 56px;
   }
 }

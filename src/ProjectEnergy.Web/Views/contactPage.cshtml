@@ -1,0 +1,86 @@
+﻿@inherits UmbracoViewPage
+@using Umbraco.Cms.Core.Strings
+@using P = ProjectEnergy.Web.Content.ContentAliases.Props
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string T(string key) => Umbraco.GetDictionaryValue(key) ?? key;
+    var home = Model.Root();
+    var details = new[]
+    {
+        (Icon: "email", Label: T("Contact.Email"), Value: home.Value<string>(P.ContactEmail)),
+        (Icon: "phone", Label: T("Contact.Phone"), Value: home.Value<string>(P.ContactPhone)),
+        (Icon: "location", Label: T("Contact.Address"), Value: home.Value<string>(P.ContactAddress)),
+        (Icon: "clock", Label: T("Contact.Hours"), Value: (string?)null),
+    };
+}
+
+<partial name="_PageHeader" model="Model" />
+
+<section class="section">
+    <div class="container-page grid gap-12 lg:grid-cols-12">
+        <div class="space-y-4 lg:col-span-5">
+            @foreach (var detail in details)
+            {
+                <div class="flex items-start gap-4 rounded-xl border border-slate-200 p-5">
+                    <span class="icon-tile shrink-0">@SiteIcons.Svg(detail.Icon)</span>
+                    <div>
+                        <p class="text-xs font-semibold tracking-wide text-slate-500 uppercase">@detail.Label</p>
+                        <p class="mt-1 font-semibold whitespace-pre-line text-navy-900">@(string.IsNullOrWhiteSpace(detail.Value) ? T("Contact.ToConfirm") : detail.Value)</p>
+                    </div>
+                </div>
+            }
+            <div class="prose-content pt-4">
+                @Html.Raw(Model.Value<IHtmlEncodedString>(P.Body)?.ToHtmlString())
+            </div>
+        </div>
+
+        <div class="lg:col-span-7">
+            <div class="card p-8 sm:p-10">
+                <div class="flex items-center justify-between gap-3">
+                    <h2 class="text-2xl font-bold">@T("Cta.RequestQuote")</h2>
+                    <span class="demo-badge">@T("Demo.Badge")</span>
+                </div>
+
+                @* Sem <form>: neste incremento nada é enviado. *@
+                <fieldset disabled class="mt-8 space-y-5" aria-describedby="contact-disabled">
+                    <div class="grid gap-5 sm:grid-cols-2">
+                        <div>
+                            <label class="form-label" for="contact-name">@T("Form.Name")</label>
+                            <input id="contact-name" type="text" class="form-field" />
+                        </div>
+                        <div>
+                            <label class="form-label" for="contact-company">@T("Form.Company")</label>
+                            <input id="contact-company" type="text" class="form-field" />
+                        </div>
+                        <div>
+                            <label class="form-label" for="contact-email">@T("Form.Email")</label>
+                            <input id="contact-email" type="email" class="form-field" />
+                        </div>
+                        <div>
+                            <label class="form-label" for="contact-phone">@T("Form.Phone")</label>
+                            <input id="contact-phone" type="tel" class="form-field" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label" for="contact-type">@T("Form.EnquiryType")</label>
+                        <select id="contact-type" class="form-field">
+                            <option>@T("Form.EnquiryQuote")</option>
+                            <option>@T("Form.EnquiryGeneral")</option>
+                            <option>@T("Form.EnquiryPartnership")</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label" for="contact-message">@T("Form.Message")</label>
+                        <textarea id="contact-message" rows="5" class="form-field"></textarea>
+                    </div>
+                    <label class="flex items-start gap-3 text-sm text-slate-600">
+                        <input type="checkbox" class="mt-0.5 size-4 rounded border-slate-300" />
+                        <span>@T("Form.Consent")</span>
+                    </label>
+                    <button type="button" class="btn-disabled w-full py-3.5">@T("Form.Send")</button>
+                </fieldset>
+                <p id="contact-disabled" class="mt-4 text-center text-xs text-slate-500">@T("Form.Disabled")</p>
+            </div>
+        </div>
+    </div>
+</section>

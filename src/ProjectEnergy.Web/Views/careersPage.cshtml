@@ -1,0 +1,63 @@
+﻿@inherits UmbracoViewPage
+@using Umbraco.Cms.Core.Strings
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string T(string key) => Umbraco.GetDictionaryValue(key) ?? key;
+}
+
+<partial name="_PageHeader" model="Model" />
+
+<section class="section">
+    <div class="container-page grid gap-12 lg:grid-cols-12">
+        <div class="prose-content lg:col-span-6">
+            @Html.Raw(Model.Value<IHtmlEncodedString>(ContentAliases.Props.Body)?.ToHtmlString())
+        </div>
+
+        <div class="lg:col-span-6">
+            <div class="card p-8 sm:p-10">
+                <div class="flex items-center justify-between gap-3">
+                    <h2 class="text-2xl font-bold">@T("Cta.JoinTalentPool")</h2>
+                    <span class="demo-badge">@T("Demo.Badge")</span>
+                </div>
+
+                @* Sem <form>: neste incremento nada é enviado nem carregado. *@
+                <fieldset disabled class="mt-8 space-y-5" aria-describedby="careers-disabled">
+                    <div class="grid gap-5 sm:grid-cols-2">
+                        <div>
+                            <label class="form-label" for="careers-name">@T("Form.Name")</label>
+                            <input id="careers-name" type="text" class="form-field" />
+                        </div>
+                        <div>
+                            <label class="form-label" for="careers-email">@T("Form.Email")</label>
+                            <input id="careers-email" type="email" class="form-field" />
+                        </div>
+                        <div>
+                            <label class="form-label" for="careers-profession">@T("Form.Profession")</label>
+                            <input id="careers-profession" type="text" class="form-field" />
+                        </div>
+                        <div>
+                            <label class="form-label" for="careers-experience">@T("Form.Experience")</label>
+                            <input id="careers-experience" type="number" class="form-field" />
+                        </div>
+                    </div>
+                    <div>
+                        <label class="form-label" for="careers-location">@T("Form.Location")</label>
+                        <input id="careers-location" type="text" class="form-field" />
+                    </div>
+                    <div>
+                        <span class="form-label">@T("Form.Cv")</span>
+                        <div class="flex items-center justify-center rounded-lg border-2 border-dashed border-slate-200 bg-slate-50 px-4 py-6 text-center text-sm text-slate-500">
+                            @T("Form.CvUnavailable")
+                        </div>
+                    </div>
+                    <label class="flex items-start gap-3 text-sm text-slate-600">
+                        <input type="checkbox" class="mt-0.5 size-4 rounded border-slate-300" />
+                        <span>@T("Form.ConsentCv")</span>
+                    </label>
+                    <button type="button" class="btn-disabled w-full py-3.5">@T("Form.SendApplication")</button>
+                </fieldset>
+                <p id="careers-disabled" class="mt-4 text-center text-xs text-slate-500">@T("Form.Disabled")</p>
+            </div>
+        </div>
+    </div>
+</section>

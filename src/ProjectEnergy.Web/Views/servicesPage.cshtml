@@ -1,0 +1,43 @@
+﻿@inherits UmbracoViewPage
+@using Umbraco.Cms.Core.Strings
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string T(string key) => Umbraco.GetDictionaryValue(key) ?? key;
+    var services = Model.Children().ToList();
+    var available = services.Where(s => !s.Value<bool>(ContentAliases.Props.IsPlanned)).ToList();
+    var planned = services.Where(s => s.Value<bool>(ContentAliases.Props.IsPlanned)).ToList();
+}
+
+<partial name="_PageHeader" model="Model" />
+
+<section class="section">
+    <div class="container-page">
+        <div class="prose-content">
+            @Html.Raw(Model.Value<IHtmlEncodedString>(ContentAliases.Props.Body)?.ToHtmlString())
+        </div>
+
+        @if (available.Count > 0)
+        {
+            <h2 class="mt-12 text-2xl font-bold">@T("Service.Available")</h2>
+            <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                @foreach (var service in available)
+                {
+                    <partial name="_ServiceCard" model="service" />
+                }
+            </div>
+        }
+
+        @if (planned.Count > 0)
+        {
+            <h2 class="mt-16 text-2xl font-bold">@T("Service.Planned")</h2>
+            <div class="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                @foreach (var service in planned)
+                {
+                    <partial name="_ServiceCard" model="service" />
+                }
+            </div>
+        }
+
+        <p class="mt-10 text-sm text-slate-500">@T("Service.Pending")</p>
+    </div>
+</section>

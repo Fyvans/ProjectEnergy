@@ -1,0 +1,18 @@
+﻿@inherits UmbracoViewPage
+@using Umbraco.Cms.Core.Strings
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<partial name="_PageHeader" model="Model" />
+
+<section class="section">
+    <div class="container-page grid gap-12 lg:grid-cols-12">
+        <div class="prose-content lg:col-span-8">
+            @Html.Raw(Model.Value<IHtmlEncodedString>(ContentAliases.Props.Body)?.ToHtmlString())
+        </div>
+        <div class="lg:col-span-4">
+            <partial name="_ContactAside" model="Model" />
+        </div>
+    </div>
+</section>

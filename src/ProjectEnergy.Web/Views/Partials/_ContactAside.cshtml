@@ -1,0 +1,15 @@
+@inherits UmbracoViewPage
+@{
+    var contactPage = Model.Root().Children().FirstOrDefault(x => x.ContentType.Alias == ContentAliases.ContactPage);
+    string T(string key) => Umbraco.GetDictionaryValue(key) ?? key;
+}
+@if (contactPage is not null)
+{
+    <aside class="relative overflow-hidden rounded-2xl bg-navy-900 p-8 text-white lg:sticky lg:top-28">
+        <div class="absolute -top-16 -right-16 size-48 rounded-full bg-flame-500/20 blur-2xl" aria-hidden="true"></div>
+        <span class="relative flex size-12 items-center justify-center rounded-lg bg-white/10">@SiteIcons.Svg("briefcase")</span>
+        <h2 class="relative mt-6 text-xl font-bold text-white">@T("Cta.TalkToTeam")</h2>
+        <p class="relative mt-3 text-sm leading-relaxed text-navy-100/90">@(Model.Root().Value<string>(ContentAliases.Props.ContactText))</p>
+        <a href="@contactPage.Url()" class="btn-primary relative mt-6 w-full">@T("Cta.RequestQuote") @SiteIcons.Svg("arrow-right", "size-4")</a>
+    </aside>
+}

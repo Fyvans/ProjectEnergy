@@ -1,0 +1,175 @@
+@inherits UmbracoViewPage
+@using P = ProjectEnergy.Web.Content.ContentAliases.Props
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string T(string key) => Umbraco.GetDictionaryValue(key) ?? key;
+    IPublishedContent? Page(string alias) => Model.Children().FirstOrDefault(x => x.ContentType.Alias == alias);
+
+    var about = Model.Children().FirstOrDefault(x => x.ContentType.Alias == ContentAliases.ContentPage);
+    var servicesPage = Page(ContentAliases.ServicesPage);
+    var careersPage = Page(ContentAliases.CareersPage);
+    var contactPage = Page(ContentAliases.ContactPage);
+    // Ordem das páginas de conteúdo na árvore: Sobre, HSEQ, Conteúdo Local.
+    var contentPages = Model.Children().Where(x => x.ContentType.Alias == ContentAliases.ContentPage).ToList();
+    var hseqPage = contentPages.ElementAtOrDefault(1);
+    var localPage = contentPages.ElementAtOrDefault(2);
+    var services = servicesPage?.Children().Take(6).ToList() ?? [];
+    var email = Model.Value<string>(P.ContactEmail);
+    var phone = Model.Value<string>(P.ContactPhone);
+}
+
+@* Destaque *@
+<section class="relative isolate overflow-hidden bg-navy-950 text-white">
+    <div class="bg-grid absolute inset-0 -z-10 [mask-image:radial-gradient(ellipse_at_top_left,black_30%,transparent_75%)]" aria-hidden="true"></div>
+    <div class="absolute -right-40 -bottom-40 -z-10 size-[40rem] rounded-full bg-energy-600/20 blur-3xl" aria-hidden="true"></div>
+    <div class="absolute top-10 left-1/3 -z-10 size-[26rem] rounded-full bg-flame-500/10 blur-3xl" aria-hidden="true"></div>
+
+    <div class="container-page grid items-center gap-14 py-20 sm:py-28 lg:grid-cols-12">
+        <div class="lg:col-span-7">
+            <div class="flex flex-wrap items-center gap-3">
+                <span class="eyebrow eyebrow-light">@T("Home.HeroEyebrow")</span>
+                @if (Model.Value<bool>(P.IsDemoContent))
+                {
+                    <span class="demo-badge">@T("Demo.Badge")</span>
+                }
+            </div>
+            <h1 class="mt-6 text-4xl leading-[1.1] font-extrabold tracking-tight text-white sm:text-5xl lg:text-[3.5rem]">@(Model.Value<string>(P.HeroTitle))</h1>
+            <p class="mt-6 max-w-2xl text-lg leading-relaxed text-navy-100/90 sm:text-xl">@(Model.Value<string>(P.HeroText))</p>
+            <div class="mt-10 flex flex-wrap gap-3">
+                @if (contactPage is not null)
+                {
+                    <a href="@contactPage.Url()" class="btn-primary px-6 py-3.5 text-base">@T("Cta.RequestQuote") @SiteIcons.Svg("arrow-right", "size-4")</a>
+                }
+                @if (servicesPage is not null)
+                {
+                    <a href="@servicesPage.Url()" class="btn-ghost-light px-6 py-3.5 text-base">@T("Cta.AllServices")</a>
+                }
+            </div>
+        </div>
+
+        <div class="hidden lg:col-span-5 lg:block">
+            <div class="relative mx-auto max-w-sm">
+                <div class="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-flame-500/40 via-energy-600/30 to-transparent blur-2xl" aria-hidden="true"></div>
+                <div class="relative rounded-3xl bg-white p-10 shadow-2xl ring-1 ring-white/20">
+                    <img src="/images/logo-project-energy.webp" alt="Project Energy — Energia Que Nos Move" width="574" height="640" class="h-auto w-full" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="h-1 bg-gradient-to-r from-energy-600 via-flame-500 to-navy-500" aria-hidden="true"></div>
+</section>
+
+@* Apresentação *@
+<section class="section">
+    <div class="container-page grid gap-10 lg:grid-cols-12">
+        <div class="lg:col-span-5">
+            <span class="eyebrow">@T("Home.AboutEyebrow")</span>
+            <h2 class="section-title">@(Model.Value<string>(P.IntroTitle))</h2>
+        </div>
+        <div class="lg:col-span-7">
+            <p class="text-lg leading-relaxed text-slate-600">@(Model.Value<string>(P.IntroText))</p>
+            @if (about is not null)
+            {
+                <a href="@about.Url()" class="mt-6 inline-flex items-center gap-2 text-sm font-semibold text-navy-700 hover:text-navy-900">@T("Cta.LearnMore") @SiteIcons.Svg("arrow-right", "size-4")</a>
+            }
+        </div>
+    </div>
+</section>
+
+@* Serviços *@
+@if (services.Count > 0)
+{
+    <section class="section bg-slate-50">
+        <div class="container-page">
+            <div class="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
+                <div>
+                    <span class="eyebrow">@T("Home.ServicesEyebrow")</span>
+                    <h2 class="section-title">@T("Home.ServicesTitle")</h2>
+                </div>
+                <a href="@servicesPage!.Url()" class="btn-secondary self-start sm:self-auto">@T("Cta.AllServices") @SiteIcons.Svg("arrow-right", "size-4")</a>
+            </div>
+            <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                @foreach (var service in services)
+                {
+                    <partial name="_ServiceCard" model="service" />
+                }
+            </div>
+        </div>
+    </section>
+}
+
+@* HSEQ e Conteúdo local *@
+<section class="section">
+    <div class="container-page grid gap-6 lg:grid-cols-2">
+        <div class="card flex flex-col p-10">
+            <span class="icon-tile">@SiteIcons.Svg("safety")</span>
+            <span class="eyebrow mt-8">@T("Home.HseqEyebrow")</span>
+            <h2 class="mt-3 text-2xl font-bold sm:text-3xl">@(Model.Value<string>(P.HseqTitle))</h2>
+            <p class="mt-4 flex-1 leading-relaxed text-slate-600">@(Model.Value<string>(P.HseqText))</p>
+            @if (hseqPage is not null)
+            {
+                <a href="@hseqPage.Url()" class="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-navy-700 hover:text-navy-900">@T("Cta.LearnMore") @SiteIcons.Svg("arrow-right", "size-4")</a>
+            }
+        </div>
+        <div class="relative flex flex-col overflow-hidden rounded-xl bg-energy-700 p-10 text-white">
+            <div class="absolute -top-20 -right-20 size-72 rounded-full bg-energy-500/40 blur-2xl" aria-hidden="true"></div>
+            <span class="relative flex size-12 items-center justify-center rounded-lg bg-white/10 text-white">@SiteIcons.Svg("community")</span>
+            <span class="eyebrow eyebrow-light relative mt-8">@T("Home.LocalEyebrow")</span>
+            <h2 class="relative mt-3 text-2xl font-bold text-white sm:text-3xl">@(Model.Value<string>(P.LocalContentTitle))</h2>
+            <p class="relative mt-4 flex-1 leading-relaxed text-energy-50/90">@(Model.Value<string>(P.LocalContentText))</p>
+            @if (localPage is not null)
+            {
+                <a href="@localPage.Url()" class="relative mt-8 inline-flex items-center gap-2 text-sm font-semibold text-white hover:text-flame-300">@T("Cta.LearnMore") @SiteIcons.Svg("arrow-right", "size-4")</a>
+            }
+        </div>
+    </div>
+</section>
+
+@* Carreiras *@
+<section class="relative isolate overflow-hidden bg-navy-800 text-white">
+    <div class="bg-grid absolute inset-0 -z-10 opacity-60" aria-hidden="true"></div>
+    <div class="container-page flex flex-col items-start justify-between gap-8 py-16 lg:flex-row lg:items-center">
+        <div class="max-w-2xl">
+            <span class="eyebrow eyebrow-light">@T("Home.CareersEyebrow")</span>
+            <h2 class="mt-3 text-3xl font-bold text-white">@(Model.Value<string>(P.CareersTitle))</h2>
+            <p class="mt-4 leading-relaxed text-navy-100/90">@(Model.Value<string>(P.CareersText))</p>
+        </div>
+        @if (careersPage is not null)
+        {
+            <a href="@careersPage.Url()" class="btn-primary shrink-0 px-6 py-3.5 text-base">@T("Cta.JoinTalentPool") @SiteIcons.Svg("arrow-right", "size-4")</a>
+        }
+    </div>
+</section>
+
+@* Contacto *@
+<section class="section">
+    <div class="container-page">
+        <div class="grid gap-10 rounded-2xl border border-slate-200 bg-slate-50 p-8 sm:p-12 lg:grid-cols-12 lg:items-center">
+            <div class="lg:col-span-6">
+                <span class="eyebrow">@T("Home.ContactEyebrow")</span>
+                <h2 class="section-title">@(Model.Value<string>(P.ContactTitle))</h2>
+                <p class="section-lead">@(Model.Value<string>(P.ContactText))</p>
+            </div>
+            <div class="space-y-4 lg:col-span-6">
+                <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                    <span class="icon-tile">@SiteIcons.Svg("email")</span>
+                    <div>
+                        <p class="text-xs font-semibold tracking-wide text-slate-500 uppercase">@T("Contact.Email")</p>
+                        <p class="font-semibold text-navy-900">@(string.IsNullOrWhiteSpace(email) ? T("Contact.ToConfirm") : email)</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 rounded-xl bg-white p-5 shadow-sm ring-1 ring-slate-200">
+                    <span class="icon-tile">@SiteIcons.Svg("phone")</span>
+                    <div>
+                        <p class="text-xs font-semibold tracking-wide text-slate-500 uppercase">@T("Contact.Phone")</p>
+                        <p class="font-semibold text-navy-900">@(string.IsNullOrWhiteSpace(phone) ? T("Contact.ToConfirm") : phone)</p>
+                    </div>
+                </div>
+                @if (contactPage is not null)
+                {
+                    <a href="@contactPage.Url()" class="btn-secondary w-full py-3.5 text-base">@T("Cta.TalkToTeam") @SiteIcons.Svg("arrow-right", "size-4")</a>
+                }
+            </div>
+        </div>
+    </div>
+</section>

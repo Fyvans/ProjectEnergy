@@ -501,3 +501,12 @@ Thumbs.db
 .idea/
 .vscode/*
 !.vscode/extensions.json
+
+# --- Umbraco CMS ---
+appsettings-schema.json
+appsettings-schema.*.json
+umbraco-package-schema.json
+src/ProjectEnergy.Web/umbraco/Data/
+src/ProjectEnergy.Web/umbraco/Logs/
+src/ProjectEnergy.Web/umbraco/models/
+src/ProjectEnergy.Web/wwwroot/media/

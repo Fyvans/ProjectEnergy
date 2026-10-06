@@ -1,72 +1,113 @@
+@inherits UmbracoViewPage
 @{
+    var home = Model.Root();
     var culture = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
     var otherCulture = culture == "en" ? "pt" : "en";
-    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "Index";
-    var navItems = new[]
-    {
-        (Action: "Index", Label: L["Nav_Home"].Value),
-        (Action: "About", Label: L["Nav_About"].Value),
-        (Action: "Services", Label: L["Nav_Services"].Value),
-        (Action: "Hseq", Label: L["Nav_Hseq"].Value),
-        (Action: "LocalContent", Label: L["Nav_LocalContent"].Value),
-        (Action: "Careers", Label: L["Nav_Careers"].Value),
-        (Action: "Contact", Label: L["Nav_Contact"].Value),
-    };
+    var navItems = home.Children().Where(x => x.TemplateId > 0).ToList();
+    var contactPage = home.Children().FirstOrDefault(x => x.ContentType.Alias == ContentAliases.ContactPage);
+    var isHome = Model.Id == home.Id;
+    var title = isHome ? $"Project Energy | {home.Value<string>(ContentAliases.Props.HeroTitle)}" : $"{Model.Name} | Project Energy";
+    var description = Model.Value<string>(ContentAliases.Props.MetaDescription);
+    var demoNotice = home.Value<string>(ContentAliases.Props.DemoNotice);
+    var email = home.Value<string>(ContentAliases.Props.ContactEmail);
+    var phone = home.Value<string>(ContentAliases.Props.ContactPhone);
+    string T(string key) => Umbraco.GetDictionaryValue(key) ?? key;
 }
 <!DOCTYPE html>
-<html lang="@culture">
+<html lang="@culture" class="scroll-pt-24">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    @* Conteúdo de demonstração: não indexar até haver conteúdo aprovado. *@
+    <title>@title</title>
+    @if (!string.IsNullOrWhiteSpace(description))
+    {
+        <meta name="description" content="@description" />
+    }
+    @* Conteúdo de demonstração: não indexar até haver conteúdo aprovado e decisão de lançamento. *@
     <meta name="robots" content="noindex, nofollow" />
-    <title>@ViewData["Title"] | Project Energy</title>
-    <link rel="alternate" hreflang="pt" href="@Url.Action(action, "Home", new { culture = "pt" })" />
-    <link rel="alternate" hreflang="en" href="@Url.Action(action, "Home", new { culture = "en" })" />
+    <meta name="theme-color" content="#0a2a50" />
+    <link rel="canonical" href="@Model.Url(mode: UrlMode.Absolute)" />
+    <link rel="alternate" hreflang="pt" href="@Model.Url(culture: "pt", mode: UrlMode.Absolute)" />
+    <link rel="alternate" hreflang="en" href="@Model.Url(culture: "en", mode: UrlMode.Absolute)" />
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="preload" href="/fonts/montserrat-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
-<body class="flex min-h-screen flex-col bg-slate-50 font-sans text-slate-800 antialiased">
-    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2">@L["SkipToContent"]</a>
+<body class="flex min-h-screen flex-col bg-white font-sans text-slate-800 antialiased">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-md focus:bg-white focus:px-4 focus:py-2 focus:shadow-lg">@T("Nav.SkipToContent")</a>
 
-    <div class="bg-amber-100 text-amber-900" role="note">
-        <p class="container-page py-2 text-center text-xs sm:text-sm">@L["DemoBanner"]</p>
-    </div>
+    @if (!string.IsNullOrWhiteSpace(demoNotice))
+    {
+        <div class="bg-amber-400 text-amber-950" role="note">
+            <p class="container-page flex items-center justify-center gap-2 py-1.5 text-center text-xs font-medium">
+                <span class="hidden rounded-sm bg-amber-950/10 px-1.5 py-0.5 text-[0.65rem] font-bold tracking-wider uppercase sm:inline">@T("Demo.Badge")</span>
+                <span>@demoNotice</span>
+            </p>
+        </div>
+    }
 
-    <header class="border-b border-slate-200 bg-white">
-        <div class="container-page flex items-center justify-between gap-4 py-4">
-            <a asp-action="Index" class="text-lg font-bold tracking-tight text-brand-900">Project Energy</a>
+    <header class="sticky top-0 z-50 border-b border-slate-200/80 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+        <div class="container-page flex h-20 items-center justify-between gap-6">
+            <a href="@home.Url()" class="flex shrink-0 items-center gap-3" aria-label="Project Energy — @T("Page.Home")">
+                <img src="/images/logo-mark.webp" alt="" width="44" height="46" class="h-11 w-auto" />
+                <span class="font-display leading-none font-extrabold tracking-tight">
+                    <span class="block text-[1.05rem] text-navy-800">PROJECT</span>
+                    <span class="block text-[1.05rem] text-energy-600">ENERGY</span>
+                </span>
+            </a>
 
-            <nav aria-label="@L["NavLabel"]" class="hidden lg:block">
-                <ul class="flex items-center gap-1 text-sm font-medium">
+            <nav aria-label="@T("Nav.Main")" class="hidden xl:block">
+                <ul class="flex items-center gap-1">
                     @foreach (var item in navItems)
                     {
-                        var current = string.Equals(item.Action, action, StringComparison.OrdinalIgnoreCase);
+                        var current = Model.Id == item.Id || Model.AncestorsOrSelf().Any(a => a.Id == item.Id);
                         <li>
-                            <a asp-action="@item.Action" aria-current="@(current ? "page" : null)"
-                               class="rounded-md px-3 py-2 @(current ? "bg-brand-50 text-brand-700" : "text-slate-600 hover:bg-slate-100 hover:text-brand-900")">@item.Label</a>
+                            <a href="@item.Url()" aria-current="@(current ? "page" : null)"
+                               class="relative rounded-md px-3 py-2 text-sm font-medium transition-colors @(current ? "text-navy-900" : "text-slate-600 hover:text-navy-900")">
+                                @item.Name
+                                @if (current)
+                                {
+                                    <span class="absolute inset-x-3 -bottom-[1.3rem] h-0.5 rounded-full bg-flame-500"></span>
+                                }
+                            </a>
                         </li>
                     }
                 </ul>
             </nav>
 
-            <div class="flex items-center gap-2">
-                <a href="@Url.Action(action, "Home", new { culture = otherCulture })" hreflang="@otherCulture" lang="@otherCulture"
-                   aria-label="@L["OtherLanguageLabel"]"
-                   class="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100">@L["OtherLanguageName"]</a>
+            <div class="flex items-center gap-3">
+                <div class="flex items-center rounded-full border border-slate-200 p-0.5 text-xs font-semibold" role="group" aria-label="@T("Nav.Language")">
+                    <a href="@Model.Url(culture: "pt")" hreflang="pt" lang="pt" aria-current="@(culture == "pt" ? "true" : null)"
+                       class="rounded-full px-2.5 py-1 @(culture == "pt" ? "bg-navy-800 text-white" : "text-slate-500 hover:text-navy-900")">PT</a>
+                    <a href="@Model.Url(culture: "en")" hreflang="en" lang="en" aria-current="@(culture == "en" ? "true" : null)"
+                       class="rounded-full px-2.5 py-1 @(culture == "en" ? "bg-navy-800 text-white" : "text-slate-500 hover:text-navy-900")">EN</a>
+                </div>
 
-                <details class="relative lg:hidden">
-                    <summary class="cursor-pointer list-none rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100">@L["Menu"]</summary>
-                    <nav aria-label="@L["NavLabel"]" class="absolute right-0 z-10 mt-2 w-56 rounded-md border border-slate-200 bg-white p-2 shadow-lg">
-                        <ul class="text-sm font-medium">
+                @if (contactPage is not null)
+                {
+                    <a href="@contactPage.Url()" class="btn-primary hidden lg:inline-flex">@T("Cta.RequestQuote")</a>
+                }
+
+                <details class="group relative xl:hidden">
+                    <summary class="flex size-10 cursor-pointer list-none items-center justify-center rounded-md border border-slate-200 text-navy-800 hover:bg-slate-50" aria-label="@T("Nav.Menu")">
+                        @SiteIcons.Svg("menu", "size-5")
+                    </summary>
+                    <nav aria-label="@T("Nav.Main")" class="absolute right-0 mt-3 w-64 rounded-xl border border-slate-200 bg-white p-2 shadow-xl">
+                        <ul>
                             @foreach (var item in navItems)
                             {
-                                var current = string.Equals(item.Action, action, StringComparison.OrdinalIgnoreCase);
+                                var current = Model.Id == item.Id || Model.AncestorsOrSelf().Any(a => a.Id == item.Id);
                                 <li>
-                                    <a asp-action="@item.Action" aria-current="@(current ? "page" : null)"
-                                       class="block rounded px-3 py-2 @(current ? "bg-brand-50 text-brand-700" : "text-slate-700 hover:bg-slate-100")">@item.Label</a>
+                                    <a href="@item.Url()" aria-current="@(current ? "page" : null)"
+                                       class="block rounded-lg px-3 py-2.5 text-sm font-medium @(current ? "bg-navy-50 text-navy-900" : "text-slate-700 hover:bg-slate-50")">@item.Name</a>
                                 </li>
                             }
                         </ul>
+                        @if (contactPage is not null)
+                        {
+                            <a href="@contactPage.Url()" class="btn-primary mt-2 w-full">@T("Cta.RequestQuote")</a>
+                        }
                     </nav>
                 </details>
             </div>
@@ -77,13 +118,66 @@
         @RenderBody()
     </main>
 
-    <footer class="mt-16 border-t border-slate-200 bg-brand-900 text-brand-100">
-        <div class="container-page flex flex-col gap-2 py-8 text-sm sm:flex-row sm:items-center sm:justify-between">
-            <p>&copy; @DateTime.UtcNow.Year Project Energy</p>
-            <p class="text-brand-100/80">@L["FooterNotice"]</p>
+    <footer class="bg-navy-950 text-navy-200">
+        <div class="container-page grid gap-12 py-16 md:grid-cols-12">
+            <div class="md:col-span-5">
+                <div class="flex items-center gap-3">
+                    <span class="flex size-14 items-center justify-center rounded-xl bg-white p-1.5">
+                        <img src="/images/logo-mark.webp" alt="" width="44" height="46" class="h-11 w-auto" />
+                    </span>
+                    <span class="font-display text-lg leading-none font-extrabold tracking-tight text-white">PROJECT<br /><span class="text-energy-500">ENERGY</span></span>
+                </div>
+                <p class="mt-5 max-w-sm text-sm leading-relaxed text-navy-200/80">@(home.Value<string>(ContentAliases.Props.FooterText))</p>
+            </div>
+
+            <div class="md:col-span-3">
+                <h2 class="text-xs font-semibold tracking-[0.18em] text-white uppercase">@T("Footer.Pages")</h2>
+                <ul class="mt-4 space-y-2.5 text-sm">
+                    @foreach (var item in navItems)
+                    {
+                        <li><a href="@item.Url()" class="text-navy-200/80 transition-colors hover:text-white">@item.Name</a></li>
+                    }
+                </ul>
+            </div>
+
+            <div class="md:col-span-4">
+                <h2 class="text-xs font-semibold tracking-[0.18em] text-white uppercase">@T("Footer.Contact")</h2>
+                <ul class="mt-4 space-y-3 text-sm">
+                    <li class="flex items-start gap-3">
+                        @SiteIcons.Svg("email", "mt-0.5 size-5 shrink-0 text-flame-400")
+                        @if (!string.IsNullOrWhiteSpace(email))
+                        {
+                            <a href="mailto:@email" class="hover:text-white">@email</a>
+                        }
+                        else
+                        {
+                            <span class="text-navy-200/60">@T("Contact.ToConfirm")</span>
+                        }
+                    </li>
+                    <li class="flex items-start gap-3">
+                        @SiteIcons.Svg("phone", "mt-0.5 size-5 shrink-0 text-flame-400")
+                        @if (!string.IsNullOrWhiteSpace(phone))
+                        {
+                            <a href="tel:@phone.Replace(" ", "")" class="hover:text-white">@phone</a>
+                        }
+                        else
+                        {
+                            <span class="text-navy-200/60">@T("Contact.ToConfirm")</span>
+                        }
+                    </li>
+                </ul>
+                @if (contactPage is not null)
+                {
+                    <a href="@contactPage.Url()" class="btn-primary mt-6">@T("Cta.TalkToTeam") @SiteIcons.Svg("arrow-right", "size-4")</a>
+                }
+            </div>
+        </div>
+        <div class="border-t border-white/10">
+            <div class="container-page flex flex-col gap-2 py-6 text-xs text-navy-200/60 sm:flex-row sm:items-center sm:justify-between">
+                <p>&copy; @DateTime.UtcNow.Year @(home.Value<string>(ContentAliases.Props.LegalName)). @T("Footer.Rights")</p>
+                <p lang="pt">Energia Que Nos Move</p>
+            </div>
         </div>
     </footer>
-
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

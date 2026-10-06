@@ -1,8 +1,0 @@
-@* Cabeçalho das páginas internas. Usa ViewData["Heading"] (ou "Title") e ViewData["Intro"]. *@
-<section class="border-b border-slate-200 bg-white">
-    <div class="container-page py-10 sm:py-14">
-        <partial name="_DemoBadge" />
-        <h1 class="page-title mt-3">@(ViewData["Heading"] ?? ViewData["Title"])</h1>
-        <p class="mt-4 max-w-3xl text-lg text-slate-600">@ViewData["Intro"]</p>
-    </div>
-</section>
