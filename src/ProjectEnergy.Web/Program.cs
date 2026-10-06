@@ -21,6 +21,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// Pré-visualização por túnel: palavra-passe obrigatória e backoffice inacessível para pedidos externos.
+app.UseMiddleware<ProjectEnergy.Web.Infrastructure.PreviewAccessMiddleware>();
+
 // O site vive em /pt e /en (domínios configurados no Umbraco); a raiz encaminha para o idioma por omissão.
 app.Use(async (context, next) =>
 {

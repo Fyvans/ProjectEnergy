@@ -61,6 +61,21 @@ Na primeira execução o Umbraco instala-se em SQLite e cria o modelo e o conte�
 
 Para recomeçar do zero, parar a aplicação e apagar `src/ProjectEnergy.Web/umbraco/Data`.
 
+## Pré-visualização para o cliente (sem alojamento)
+
+Pedidos externos (via Cloudflare ou com um Host que não é `localhost`) exigem a palavra-passe
+`Preview:Password` e nunca acedem a `/umbraco`. Sem palavra-passe configurada, o acesso externo é recusado.
+
+```bash
+dotnet user-secrets set "Preview:Password" "<palavra-passe para o cliente>"
+dotnet run --launch-profile http
+cloudflared tunnel --no-autoupdate --url http://localhost:5134
+```
+
+O `cloudflared` mostra um endereço `https://<aleatório>.trycloudflare.com`, que muda a cada arranque.
+O cliente entra com qualquer nome de utilizador e a palavra-passe definida. O link só funciona
+enquanto a aplicação e o túnel estiverem a correr.
+
 ## Edição de conteúdo
 
 No backoffice, em **Content**: página inicial (destaque, secções, dados do site, faixa de demonstração),
