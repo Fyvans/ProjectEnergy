@@ -1,0 +1,89 @@
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName;
+    var otherCulture = culture == "en" ? "pt" : "en";
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "Index";
+    var navItems = new[]
+    {
+        (Action: "Index", Label: L["Nav_Home"].Value),
+        (Action: "About", Label: L["Nav_About"].Value),
+        (Action: "Services", Label: L["Nav_Services"].Value),
+        (Action: "Hseq", Label: L["Nav_Hseq"].Value),
+        (Action: "LocalContent", Label: L["Nav_LocalContent"].Value),
+        (Action: "Careers", Label: L["Nav_Careers"].Value),
+        (Action: "Contact", Label: L["Nav_Contact"].Value),
+    };
+}
+<!DOCTYPE html>
+<html lang="@culture">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @* Conteúdo de demonstração: não indexar até haver conteúdo aprovado. *@
+    <meta name="robots" content="noindex, nofollow" />
+    <title>@ViewData["Title"] | Project Energy</title>
+    <link rel="alternate" hreflang="pt" href="@Url.Action(action, "Home", new { culture = "pt" })" />
+    <link rel="alternate" hreflang="en" href="@Url.Action(action, "Home", new { culture = "en" })" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body class="flex min-h-screen flex-col bg-slate-50 font-sans text-slate-800 antialiased">
+    <a href="#main" class="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded focus:bg-white focus:px-3 focus:py-2">@L["SkipToContent"]</a>
+
+    <div class="bg-amber-100 text-amber-900" role="note">
+        <p class="container-page py-2 text-center text-xs sm:text-sm">@L["DemoBanner"]</p>
+    </div>
+
+    <header class="border-b border-slate-200 bg-white">
+        <div class="container-page flex items-center justify-between gap-4 py-4">
+            <a asp-action="Index" class="text-lg font-bold tracking-tight text-brand-900">Project Energy</a>
+
+            <nav aria-label="@L["NavLabel"]" class="hidden lg:block">
+                <ul class="flex items-center gap-1 text-sm font-medium">
+                    @foreach (var item in navItems)
+                    {
+                        var current = string.Equals(item.Action, action, StringComparison.OrdinalIgnoreCase);
+                        <li>
+                            <a asp-action="@item.Action" aria-current="@(current ? "page" : null)"
+                               class="rounded-md px-3 py-2 @(current ? "bg-brand-50 text-brand-700" : "text-slate-600 hover:bg-slate-100 hover:text-brand-900")">@item.Label</a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+
+            <div class="flex items-center gap-2">
+                <a href="@Url.Action(action, "Home", new { culture = otherCulture })" hreflang="@otherCulture" lang="@otherCulture"
+                   aria-label="@L["OtherLanguageLabel"]"
+                   class="rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100">@L["OtherLanguageName"]</a>
+
+                <details class="relative lg:hidden">
+                    <summary class="cursor-pointer list-none rounded-md border border-slate-300 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-100">@L["Menu"]</summary>
+                    <nav aria-label="@L["NavLabel"]" class="absolute right-0 z-10 mt-2 w-56 rounded-md border border-slate-200 bg-white p-2 shadow-lg">
+                        <ul class="text-sm font-medium">
+                            @foreach (var item in navItems)
+                            {
+                                var current = string.Equals(item.Action, action, StringComparison.OrdinalIgnoreCase);
+                                <li>
+                                    <a asp-action="@item.Action" aria-current="@(current ? "page" : null)"
+                                       class="block rounded px-3 py-2 @(current ? "bg-brand-50 text-brand-700" : "text-slate-700 hover:bg-slate-100")">@item.Label</a>
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </details>
+            </div>
+        </div>
+    </header>
+
+    <main id="main" class="flex-1">
+        @RenderBody()
+    </main>
+
+    <footer class="mt-16 border-t border-slate-200 bg-brand-900 text-brand-100">
+        <div class="container-page flex flex-col gap-2 py-8 text-sm sm:flex-row sm:items-center sm:justify-between">
+            <p>&copy; @DateTime.UtcNow.Year Project Energy</p>
+            <p class="text-brand-100/80">@L["FooterNotice"]</p>
+        </div>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

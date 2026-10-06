@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<section class="bg-brand-900 text-white">
+    <div class="container-page py-16 sm:py-24">
+        <partial name="_DemoBadge" />
+        <h1 class="mt-4 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">Project Energy</h1>
+        <p class="mt-6 max-w-2xl text-lg text-brand-100">
+            [Demo text] Placeholder for the company's main message, to be defined
+            from client-approved content.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+            <a asp-action="Services" class="rounded-md bg-accent-500 px-5 py-2.5 text-sm font-semibold text-brand-900 hover:bg-amber-400">View services (demo)</a>
+            <a asp-action="Contact" class="rounded-md border border-white/40 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/10">Contact</a>
+        </div>
+    </div>
+</section>
+
+<section class="container-page py-14">
+    <h2 class="section-title">Website sections</h2>
+    <p class="mt-2 text-slate-600">Provisional page structure. All text is demo content.</p>
+    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <a asp-action="About" class="card hover:border-brand-600"><h3 class="font-semibold text-brand-900">About</h3><p class="mt-2 text-sm text-slate-600">Company overview — content to be provided.</p></a>
+        <a asp-action="Services" class="card hover:border-brand-600"><h3 class="font-semibold text-brand-900">Services</h3><p class="mt-2 text-sm text-slate-600">Service list — to be confirmed by the client.</p></a>
+        <a asp-action="Hseq" class="card hover:border-brand-600"><h3 class="font-semibold text-brand-900">HSEQ</h3><p class="mt-2 text-sm text-slate-600">Health, Safety, Environment and Quality — policies to be provided.</p></a>
+        <a asp-action="LocalContent" class="card hover:border-brand-600"><h3 class="font-semibold text-brand-900">Local Content</h3><p class="mt-2 text-sm text-slate-600">Local content commitments — to be confirmed.</p></a>
+        <a asp-action="Careers" class="card hover:border-brand-600"><h3 class="font-semibold text-brand-900">Careers</h3><p class="mt-2 text-sm text-slate-600">Candidate information — no real openings.</p></a>
+        <a asp-action="Contact" class="card hover:border-brand-600"><h3 class="font-semibold text-brand-900">Contact</h3><p class="mt-2 text-sm text-slate-600">Visual form only, no submission in this increment.</p></a>
+    </div>
+</section>

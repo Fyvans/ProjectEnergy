@@ -1,0 +1,31 @@
+@{
+    ViewData["Title"] = "Início";
+}
+
+<section class="bg-brand-900 text-white">
+    <div class="container-page py-16 sm:py-24">
+        <partial name="_DemoBadge" />
+        <h1 class="mt-4 max-w-3xl text-4xl font-bold tracking-tight sm:text-5xl">Project Energy</h1>
+        <p class="mt-6 max-w-2xl text-lg text-brand-100">
+            [Texto de demonstração] Espaço reservado para a mensagem principal da empresa,
+            a definir com base no conteúdo aprovado pelo cliente.
+        </p>
+        <div class="mt-8 flex flex-wrap gap-3">
+            <a asp-action="Services" class="rounded-md bg-accent-500 px-5 py-2.5 text-sm font-semibold text-brand-900 hover:bg-amber-400">Ver serviços (demonstração)</a>
+            <a asp-action="Contact" class="rounded-md border border-white/40 px-5 py-2.5 text-sm font-semibold text-white hover:bg-white/10">Contacto</a>
+        </div>
+    </div>
+</section>
+
+<section class="container-page py-14">
+    <h2 class="section-title">Áreas do website</h2>
+    <p class="mt-2 text-slate-600">Estrutura provisória das páginas. Todos os textos são de demonstração.</p>
+    <div class="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <a asp-action="About" class="card hover:border-brand-600"><h3 class="font-semibold text-brand-900">Sobre</h3><p class="mt-2 text-sm text-slate-600">Apresentação institucional — conteúdo a fornecer.</p></a>
+        <a asp-action="Services" class="card hover:border-brand-600"><h3 class="font-semibold text-brand-900">Serviços</h3><p class="mt-2 text-sm text-slate-600">Lista de serviços — a confirmar pelo cliente.</p></a>
+        <a asp-action="Hseq" class="card hover:border-brand-600"><h3 class="font-semibold text-brand-900">HSEQ</h3><p class="mt-2 text-sm text-slate-600">Saúde, Segurança, Ambiente e Qualidade — políticas a fornecer.</p></a>
+        <a asp-action="LocalContent" class="card hover:border-brand-600"><h3 class="font-semibold text-brand-900">Conteúdo Local</h3><p class="mt-2 text-sm text-slate-600">Compromissos de conteúdo local — a confirmar.</p></a>
+        <a asp-action="Careers" class="card hover:border-brand-600"><h3 class="font-semibold text-brand-900">Carreiras</h3><p class="mt-2 text-sm text-slate-600">Informação para candidatos — sem vagas reais.</p></a>
+        <a asp-action="Contact" class="card hover:border-brand-600"><h3 class="font-semibold text-brand-900">Contacto</h3><p class="mt-2 text-sm text-slate-600">Formulário apenas visual, sem envio neste incremento.</p></a>
+    </div>
+</section>

@@ -1,0 +1,13 @@
+{
+  "name": "project-energy-web",
+  "private": true,
+  "description": "Compilação local de Tailwind CSS para ProjectEnergy.Web",
+  "scripts": {
+    "build:css": "tailwindcss -i ./Styles/site.css -o ./wwwroot/css/site.css --minify",
+    "watch:css": "tailwindcss -i ./Styles/site.css -o ./wwwroot/css/site.css --watch"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "4.3.3",
+    "tailwindcss": "4.3.3"
+  }
+}

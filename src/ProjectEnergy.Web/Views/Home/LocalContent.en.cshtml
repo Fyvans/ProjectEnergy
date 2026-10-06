@@ -1,0 +1,16 @@
+@{
+    ViewData["Title"] = "Local Content";
+    ViewData["Intro"] = "[Demo text] Placeholder describing the company's local content commitment.";
+}
+
+<partial name="_PageHeader" />
+
+<section class="container-page grid gap-6 py-14 md:grid-cols-3">
+    @foreach (var topic in new[] { "Employment and training", "Local suppliers", "Community" })
+    {
+        <div class="card">
+            <h2 class="font-semibold text-brand-900">@topic</h2>
+            <p class="mt-2 text-sm text-slate-600">[Example] Text and indicators to be provided by the client. No figures are shown.</p>
+        </div>
+    }
+</section>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="SkipToContent" xml:space="preserve"><value>Saltar para o conteúdo</value></data>
+  <data name="NavLabel" xml:space="preserve"><value>Navegação principal</value></data>
+  <data name="Menu" xml:space="preserve"><value>Menu</value></data>
+  <data name="Nav_Home" xml:space="preserve"><value>Início</value></data>
+  <data name="Nav_About" xml:space="preserve"><value>Sobre</value></data>
+  <data name="Nav_Services" xml:space="preserve"><value>Serviços</value></data>
+  <data name="Nav_Hseq" xml:space="preserve"><value>HSEQ</value></data>
+  <data name="Nav_LocalContent" xml:space="preserve"><value>Conteúdo Local</value></data>
+  <data name="Nav_Careers" xml:space="preserve"><value>Carreiras</value></data>
+  <data name="Nav_Contact" xml:space="preserve"><value>Contacto</value></data>
+  <data name="OtherLanguageName" xml:space="preserve"><value>English</value></data>
+  <data name="OtherLanguageLabel" xml:space="preserve"><value>Ver esta página em inglês</value></data>
+  <data name="DemoBanner" xml:space="preserve"><value>Versão de demonstração: todo o conteúdo deste website é fictício e não representa serviços, certificações, projetos ou contactos reais da Project Energy.</value></data>
+  <data name="DemoBadge" xml:space="preserve"><value>Demonstração</value></data>
+  <data name="FooterNotice" xml:space="preserve"><value>Website em desenvolvimento. Conteúdo de demonstração sujeito a validação pelo cliente.</value></data>
+</root>

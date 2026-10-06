@@ -1,0 +1,56 @@
+@{
+    ViewData["Title"] = "Contacto";
+    ViewData["Intro"] = "[Texto de demonstração] Os dados de contacto e o formulário abaixo não estão operacionais.";
+}
+
+<partial name="_PageHeader" />
+
+<section class="container-page grid gap-10 py-14 lg:grid-cols-2">
+    <div>
+        <h2 class="section-title">Dados de contacto</h2>
+        <dl class="mt-4 space-y-3 text-sm">
+            <div><dt class="font-medium text-slate-700">Morada</dt><dd class="text-slate-500">[A confirmar pelo cliente]</dd></div>
+            <div><dt class="font-medium text-slate-700">Telefone</dt><dd class="text-slate-500">[A confirmar pelo cliente]</dd></div>
+            <div><dt class="font-medium text-slate-700">Email</dt><dd class="text-slate-500">[A confirmar pelo cliente]</dd></div>
+        </dl>
+        <div class="demo-note mt-6">
+            Nenhum contacto real é apresentado. Não utilize esta página para contactar a empresa.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 class="section-title">Pedido de contacto / cotação</h2>
+        <p class="mt-2 text-sm text-slate-600">Formulário apenas visual. O envio está desativado nesta versão.</p>
+
+        @* Sem <form>: nada é enviado neste incremento. *@
+        <fieldset disabled class="mt-6 space-y-4" aria-describedby="contact-disabled">
+            <div class="grid gap-4 sm:grid-cols-2">
+                <div>
+                    <label class="form-label" for="contact-name">Nome</label>
+                    <input id="contact-name" type="text" class="form-field" />
+                </div>
+                <div>
+                    <label class="form-label" for="contact-company">Empresa</label>
+                    <input id="contact-company" type="text" class="form-field" />
+                </div>
+            </div>
+            <div>
+                <label class="form-label" for="contact-email">Email</label>
+                <input id="contact-email" type="email" class="form-field" />
+            </div>
+            <div>
+                <label class="form-label" for="contact-type">Tipo de pedido</label>
+                <select id="contact-type" class="form-field">
+                    <option>Pedido geral</option>
+                    <option>Pedido de cotação (RFQ)</option>
+                </select>
+            </div>
+            <div>
+                <label class="form-label" for="contact-message">Mensagem</label>
+                <textarea id="contact-message" rows="5" class="form-field"></textarea>
+            </div>
+            <button type="button" class="btn-disabled">Enviar</button>
+        </fieldset>
+        <p id="contact-disabled" class="mt-4 text-xs text-slate-500">Demonstração: o formulário não envia dados.</p>
+    </div>
+</section>

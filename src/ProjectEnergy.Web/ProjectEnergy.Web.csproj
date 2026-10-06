@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <!-- Ficheiros Node servem apenas a compilação do CSS; não são publicados. -->
+  <ItemGroup>
+    <Content Remove="package.json;package-lock.json" />
+    <None Include="package.json;package-lock.json" />
+  </ItemGroup>
+
+  <!--
+    Compila Tailwind CSS (Styles/site.css -> wwwroot/css/site.css) antes do build.
+    Requer `npm ci` nesta pasta. Para saltar: dotnet build -p:SkipTailwindBuild=true
+  -->
+  <Target Name="BuildTailwindCss"
+          BeforeTargets="BeforeBuild"
+          Condition="'$(SkipTailwindBuild)' != 'true'"
+          Inputs="Styles/site.css;@(Content->WithMetadataValue('Extension','.cshtml'));package-lock.json"
+          Outputs="wwwroot/css/site.css">
+    <Error Condition="!Exists('node_modules')"
+           Text="Dependências Node em falta. Execute 'npm ci' em src/ProjectEnergy.Web antes de compilar." />
+    <Exec Command="npm run build:css" />
+  </Target>
+
+  <!-- Garante que o CSS gerado entra nos static web assets mesmo no primeiro build. -->
+  <Target Name="IncludeTailwindCss" AfterTargets="BuildTailwindCss" BeforeTargets="BeforeBuild">
+    <ItemGroup>
+      <Content Include="wwwroot/css/site.css" Exclude="@(Content)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

@@ -1,0 +1,17 @@
+@model ErrorViewModel
+@{
+    ViewData["Title"] = "Erro / Error";
+}
+
+<section class="container-page py-16">
+    <h1 class="page-title">Ocorreu um erro / An error occurred</h1>
+    <p class="mt-4 text-slate-600">
+        Não foi possível processar o pedido. Tente novamente mais tarde.<br />
+        <span lang="en">We could not process your request. Please try again later.</span>
+    </p>
+
+    @if (Model.ShowRequestId)
+    {
+        <p class="mt-6 text-sm text-slate-500">Request ID: <code>@Model.RequestId</code></p>
+    }
+</section>

@@ -1,0 +1,49 @@
+@{
+    ViewData["Title"] = "Carreiras";
+    ViewData["Intro"] = "[Texto de demonstração] Espaço para informação sobre trabalhar na Project Energy.";
+}
+
+<partial name="_PageHeader" />
+
+<section class="container-page grid gap-10 py-14 lg:grid-cols-2">
+    <div>
+        <h2 class="section-title">Oportunidades</h2>
+        <div class="demo-note mt-4">
+            Não existem vagas publicadas. As oportunidades reais serão apresentadas apenas após
+            validação do cliente e definição do processo de candidatura.
+        </div>
+    </div>
+
+    <div class="card">
+        <h2 class="section-title">Candidatura espontânea</h2>
+        <p class="mt-2 text-sm text-slate-600">
+            Formulário apenas visual. O envio e o carregamento de CV estão desativados nesta versão.
+        </p>
+
+        @* Sem <form>: nada é enviado nem carregado neste incremento. *@
+        <fieldset disabled class="mt-6 space-y-4" aria-describedby="careers-disabled">
+            <div>
+                <label class="form-label" for="careers-name">Nome</label>
+                <input id="careers-name" type="text" class="form-field" />
+            </div>
+            <div>
+                <label class="form-label" for="careers-email">Email</label>
+                <input id="careers-email" type="email" class="form-field" />
+            </div>
+            <div>
+                <label class="form-label" for="careers-area">Área de interesse</label>
+                <select id="careers-area" class="form-field">
+                    <option>[Opções a definir]</option>
+                </select>
+            </div>
+            <div>
+                <span class="form-label">CV</span>
+                <div class="rounded-md border border-dashed border-slate-300 bg-slate-100 px-3 py-4 text-center text-sm text-slate-500">
+                    Carregamento de CV indisponível nesta versão
+                </div>
+            </div>
+            <button type="button" class="btn-disabled">Enviar candidatura</button>
+        </fieldset>
+        <p id="careers-disabled" class="mt-4 text-xs text-slate-500">Demonstração: o formulário não envia dados.</p>
+    </div>
+</section>
