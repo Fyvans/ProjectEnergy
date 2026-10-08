@@ -76,6 +76,39 @@ O `cloudflared` mostra um endereço `https://<aleatório>.trycloudflare.com`, qu
 O cliente entra com qualquer nome de utilizador e a palavra-passe definida. O link só funciona
 enquanto a aplicação e o túnel estiverem a correr.
 
+## Servidor de pré-visualização no IIS local
+
+Mantém o site sempre ligado nesta máquina, em `http://127.0.0.1:8090` (ambiente `Preview`, SQLite),
+sem interferir com outros sites do IIS (ex.: Extratos na porta 8080).
+
+Configuração inicial (uma vez, PowerShell **como Administrador**, na raiz do repositório):
+
+1. Instalar o [ASP.NET Core 10 Hosting Bundle](https://dotnet.microsoft.com/download/dotnet/10.0)
+   (reinicia o IIS durante alguns segundos).
+2. Parar qualquer `dotnet run` do ProjectEnergy.Web (a base de dados de desenvolvimento é copiada).
+3. Executar:
+
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File .\deploy\iis\setup-iis.ps1
+   ```
+
+Atualizações (sem privilégios de administrador) — compila, coloca o site em manutenção alguns segundos
+e copia os ficheiros, sem tocar na base de dados, logs ou media do site:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File .\deploy\iis\publish-iis.ps1
+```
+
+Túnel para o cliente apontado ao IIS:
+
+```bash
+cloudflared tunnel --no-autoupdate --url http://127.0.0.1:8090
+```
+
+O conteúdo editado no backoffice do IIS (`http://127.0.0.1:8090/umbraco`) fica em
+`C:\inetpub\ProjectEnergy\umbraco\Data` e passa a ser a cópia principal do conteúdo de demonstração;
+a base de dados de desenvolvimento (`dotnet run`) serve apenas para desenvolver código.
+
 ## Edição de conteúdo
 
 No backoffice, em **Content**: página inicial (destaque, secções, dados do site, faixa de demonstração),
